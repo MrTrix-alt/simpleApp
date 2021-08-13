@@ -7,8 +7,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,9 +33,8 @@ public class CustomerController {
         return "redirect:/showCustomers ";
     }
 
-
     @GetMapping("/addingCustomer")
-    public String showSignUpForm(Customer user) {
+    public String showAddForm(Customer customer) {
         return "customer/addCustomer";
     }
 
@@ -46,17 +43,13 @@ public class CustomerController {
         System.out.println("Model: " + model);
         Customer customer = customerService.findById(id);
         logger.debug("Found customer: " + customer);
-        if (customer == null) {
-            throw new IllegalArgumentException("Invalid user ID: " + id);
-        }
-        System.out.println("ADSA: " + customer);
         model.addAttribute("customer", customer);
         return "customer/editCustomer";
     }
 
-    @PostMapping("/update/{id}")
+    @PostMapping("/updateCustomer/{id}")
     //@PathVariable("id") long id
-    public String updateCustomer(Customer customer, Model model) {
+    public String updateCustomer(Customer customer) {
         logger.debug("Updating customer: " + customer);
         customerService.saveCustomer(customer);
         return "redirect:/showCustomers";
@@ -71,12 +64,9 @@ public class CustomerController {
     @GetMapping("/searchCustomers/{name}")
     public String searchCustomerByName(@RequestParam("name") String name, Model model) {
         logger.debug("Searching customer by name: " + name);
-        List<Customer> foundCustomers = customerService.findCustomersByName(name);
+        List<Customer> foundCustomers = customerService.findByName(name);
         logger.debug("Found customers: " + foundCustomers);
         model.addAttribute("customers", foundCustomers);
         return "customer/showCustomers";
     }
-
-
-
 }

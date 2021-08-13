@@ -8,7 +8,7 @@
 
 <body>
 <h2>Editing customer</h2>
-<form action="#" th:action="@{/update/{id}(id=${customer.id})}"
+<form action="#" th:action="@{/updateCustomer/{id}(id=${customer.id})}"
       th:object="${customer}"
       method="post">
     <label for="name">Name</label>
