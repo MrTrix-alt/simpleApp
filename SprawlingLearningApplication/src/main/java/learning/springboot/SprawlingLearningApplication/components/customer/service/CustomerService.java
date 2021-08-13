@@ -4,13 +4,13 @@ import learning.springboot.SprawlingLearningApplication.components.customer.enti
 import learning.springboot.SprawlingLearningApplication.components.customer.repostiory.ICustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class CustomerService implements ICustomerService {
 
     @Autowired
@@ -26,7 +26,7 @@ public class CustomerService implements ICustomerService {
     public Customer findById(long id) {
         Optional<Customer> customerOptional = customerRepository.findById(id);
         if (customerOptional.isEmpty()) {
-            return null;
+            throw new IllegalArgumentException("Invalid customer ID: " + id);
         }
         return customerOptional.get();
     }
@@ -42,10 +42,8 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
-    public List<Customer> findCustomersByName(String name) {
-        List<Customer> customers = (List<Customer>) customerRepository.findAll();
-        return customers.stream().
-                filter(customer -> customer.getName().equals(name))
-                .collect(Collectors.toList());
+    public List<Customer> findByName(String name) {
+        List<Customer> customers = customerRepository.findByName(name);
+        return customers;
     }
 }
